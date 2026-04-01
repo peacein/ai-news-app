@@ -12,7 +12,9 @@ export default function DashboardPage() {
   const [categoriesMap, setCategoriesMap] = useState({})
   const [activeCategory, setActiveCategory] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
-  const [loadingNews, setLoadingNews] = useState(true)
+  const [loadingNews, setLoadingNews] = useState(false)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
   // 카테고리 목록 조회
   const fetchCategories = useCallback(async () => {
@@ -27,16 +29,17 @@ export default function DashboardPage() {
   }, [])
 
   // 뉴스 목록 조회
-  const fetchNews = useCallback(async (categoryId) => {
+  const fetchNews = useCallback(async (categoryId, currentPage) => {
     setLoadingNews(true)
     try {
-      const url = categoryId ? `/api/news?categoryId=${categoryId}` : '/api/news'
-      const res = await fetch(url)
+      const params = new URLSearchParams({ page: currentPage })
+      if (categoryId) params.set('categoryId', categoryId)
+      const res = await fetch(`/api/news?${params}`)
       if (!res.ok) return
       const data = await res.json()
-      // API 응답: leftJoin으로 { articles: {...}, categories: {...} } 배열 반환
       // articles 객체만 추출 (카테고리는 categoriesMap으로 별도 관리)
-      setArticles(data.map(row => (row.articles ? row.articles : row)))
+      setArticles(data.articles.map(row => (row.articles ? row.articles : row)))
+      setTotalPages(Math.max(1, Math.ceil(data.total / data.pageSize)))
     } finally {
       setLoadingNews(false)
     }
@@ -47,11 +50,12 @@ export default function DashboardPage() {
   }, [fetchCategories])
 
   useEffect(() => {
-    fetchNews(activeCategory)
-  }, [activeCategory, fetchNews])
+    fetchNews(activeCategory, page)
+  }, [activeCategory, page, fetchNews])
 
   function handleCategorySelect(id) {
     setActiveCategory(id)
+    setPage(1)
   }
 
   function handleCategoryAdded() {
@@ -59,7 +63,8 @@ export default function DashboardPage() {
   }
 
   function handleNewsFetched() {
-    fetchNews(activeCategory)
+    setPage(1)
+    fetchNews(activeCategory, 1)
   }
 
   return (
@@ -86,7 +91,13 @@ export default function DashboardPage() {
           <div className="text-gray-400 text-sm">불러오는 중...</div>
         </div>
       ) : (
-        <NewsGrid articles={articles} categoriesMap={categoriesMap} />
+        <NewsGrid
+          articles={articles}
+          categoriesMap={categoriesMap}
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       )}
 
       {/* 카테고리 추가 모달 */}
