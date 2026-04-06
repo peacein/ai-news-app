@@ -1,5 +1,12 @@
+'use client'
+
+import { useState } from 'react'
+
 // 개별 뉴스 카드 컴포넌트
 export default function NewsCard({ article, category }) {
+  const [saved, setSaved] = useState(!!article.notionPageId)
+  const [saving, setSaving] = useState(false)
+
   // publishedAt을 읽기 쉬운 날짜 문자열로 변환
   const dateLabel = article.publishedAt
     ? new Date(article.publishedAt).toLocaleDateString('ko-KR', {
@@ -12,6 +19,23 @@ export default function NewsCard({ article, category }) {
   // 카테고리 색상 기반 배지 인라인 스타일
   const badgeBg = category?.color ? `${category.color}20` : '#6B728020'
   const badgeColor = category?.color ?? '#6B7280'
+
+  async function handleSaveToNotion() {
+    if (saved || saving) return
+    setSaving(true)
+    try {
+      const res = await fetch('/api/notion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: article.id }),
+      })
+      if (res.ok) {
+        setSaved(true)
+      }
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <article className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
@@ -55,23 +79,39 @@ export default function NewsCard({ article, category }) {
           </p>
         )}
 
-        {/* 날짜 + 원문 링크 */}
+        {/* 날짜 + 원문 링크 + Notion 저장 */}
         <div className="flex items-center justify-between pt-1">
           {dateLabel ? (
             <time className="text-xs text-gray-400">{dateLabel}</time>
           ) : (
             <span />
           )}
-          {article.sourceUrl && (
-            <a
-              href={article.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-blue-600 hover:underline"
+          <div className="flex items-center gap-2">
+            {article.sourceUrl && (
+              <a
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:underline"
+              >
+                원문 보기
+              </a>
+            )}
+            <button
+              onClick={handleSaveToNotion}
+              disabled={saved || saving}
+              className={`text-xs transition-colors ${
+                saved
+                  ? 'text-green-600 cursor-default'
+                  : saving
+                  ? 'text-gray-400 cursor-not-allowed'
+                  : 'text-gray-400 hover:text-gray-700'
+              }`}
+              title={saved ? 'Notion에 저장됨' : 'Notion에 저장'}
             >
-              원문 보기
-            </a>
-          )}
+              {saved ? '저장됨' : saving ? '저장 중...' : '뉴스 저장'}
+            </button>
+          </div>
         </div>
       </div>
     </article>
