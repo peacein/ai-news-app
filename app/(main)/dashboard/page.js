@@ -5,6 +5,7 @@ import CategoryFilter from '@/components/category/CategoryFilter'
 import CategoryManager from '@/components/category/CategoryManager'
 import FetchNewsButton from '@/components/news/FetchNewsButton'
 import NewsGrid from '@/components/news/NewsGrid'
+import KeywordSearch from '@/components/news/KeywordSearch'
 
 export default function DashboardPage() {
   const [articles, setArticles] = useState([])
@@ -12,6 +13,7 @@ export default function DashboardPage() {
   const [categoriesMap, setCategoriesMap] = useState({})
   const [activeCategory, setActiveCategory] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [keyword, setKeyword] = useState('')
   const [loadingNews, setLoadingNews] = useState(false)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -29,11 +31,12 @@ export default function DashboardPage() {
   }, [])
 
   // 뉴스 목록 조회
-  const fetchNews = useCallback(async (categoryId, currentPage) => {
+  const fetchNews = useCallback(async (categoryId, currentPage, currentKeyword) => {
     setLoadingNews(true)
     try {
       const params = new URLSearchParams({ page: currentPage })
       if (categoryId) params.set('categoryId', categoryId)
+      if (currentKeyword) params.set('keyword', currentKeyword)
       const res = await fetch(`/api/news?${params}`)
       if (!res.ok) return
       const data = await res.json()
@@ -50,11 +53,16 @@ export default function DashboardPage() {
   }, [fetchCategories])
 
   useEffect(() => {
-    fetchNews(activeCategory, page)
-  }, [activeCategory, page, fetchNews])
+    fetchNews(activeCategory, page, keyword)
+  }, [activeCategory, page, keyword, fetchNews])
 
   function handleCategorySelect(id) {
     setActiveCategory(id)
+    setPage(1)
+  }
+
+  function handleKeywordSearch(newKeyword) {
+    setKeyword(newKeyword)
     setPage(1)
   }
 
@@ -75,14 +83,15 @@ export default function DashboardPage() {
         <FetchNewsButton onFetched={handleNewsFetched} />
       </div>
 
-      {/* 카테고리 바 */}
-      <div className="mb-6">
+      {/* 카테고리 바 + 키워드 검색 */}
+      <div className="flex items-center justify-between gap-4 mb-6">
         <CategoryFilter
           categories={categories}
           activeCategory={activeCategory}
           onSelect={handleCategorySelect}
           onAddClick={() => setShowAddModal(true)}
         />
+        <KeywordSearch onSearch={handleKeywordSearch} />
       </div>
 
       {/* 뉴스 그리드 */}
