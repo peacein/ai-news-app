@@ -5,6 +5,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 @AGENTS.md
 @ui.md
 
+## 커스텀 슬래시 명령어
+
+### `/news-workflow [브랜치명]`
+
+새 기능 개발 시 브랜치 생성부터 main 병합까지 전체 흐름을 안내하는 명령어.
+정의 파일: `.claude/commands/news-workflow.md`
+
+```
+/news-workflow keyword-filter   # 브랜치명 직접 지정
+/news-workflow                  # 생략 시 기능 설명을 입력받아 이름 자동 제안
+```
+
+실행 순서:
+1. 현재 브랜치 확인 → main이 아니면 경고 후 이동 여부 질문
+2. 브랜치 생성 (`$ARGUMENTS` 또는 대화로 이름 결정)
+3. 기술 스택·컨벤션 리마인드 후 개발 시작 안내
+4. "완료" 또는 "done" 입력 시 → 변경 파일 확인 + 커밋 메시지 자동 제안 + 커밋 + main 병합
+5. 작업 요약 출력
+
+---
+
 ## 개발 명령어
 
 ```bash
