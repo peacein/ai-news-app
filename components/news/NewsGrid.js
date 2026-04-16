@@ -21,7 +21,7 @@ function buildPageItems(page, totalPages) {
 }
 
 // 뉴스 카드 그리드 컴포넌트
-export default function NewsGrid({ articles, categoriesMap, page, totalPages, onPageChange }) {
+export default function NewsGrid({ articles, categoriesMap, page, totalPages, onPageChange, onDelete }) {
   if (!articles?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -43,6 +43,7 @@ export default function NewsGrid({ articles, categoriesMap, page, totalPages, on
             key={article.id}
             article={article}
             category={categoriesMap?.[article.categoryId]}
+            onDelete={onDelete}
           />
         ))}
       </div>

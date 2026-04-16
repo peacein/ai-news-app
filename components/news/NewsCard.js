@@ -3,9 +3,27 @@
 import { useState } from 'react'
 
 // 개별 뉴스 카드 컴포넌트
-export default function NewsCard({ article, category }) {
+export default function NewsCard({ article, category, onDelete }) {
   const [saved, setSaved] = useState(!!article.notionPageId)
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  async function handleDelete() {
+    if (deleting) return
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/news/${article.id}`, { method: 'DELETE' })
+      if (res.ok) {
+        onDelete?.(article.id)
+      } else {
+        console.error('삭제 실패:', res.status)
+      }
+    } catch (error) {
+      console.error('삭제 요청 오류:', error)
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   // publishedAt을 읽기 쉬운 날짜 문자열로 변환
   const dateLabel = article.publishedAt
@@ -38,7 +56,20 @@ export default function NewsCard({ article, category }) {
   }
 
   return (
-    <article className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+    <article className="relative bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+      {/* 삭제 버튼 */}
+      <button
+        onClick={handleDelete}
+        disabled={deleting}
+        className="absolute top-2 right-2 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white/80 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+        title="삭제"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
       {/* 썸네일 */}
       {article.imageUrl && (
         <img
@@ -63,7 +94,7 @@ export default function NewsCard({ article, category }) {
             <span />
           )}
           {article.sourceName && (
-            <span className="text-xs text-gray-400">{article.sourceName}</span>
+            <span className="text-xs text-gray-400 pr-6">{article.sourceName}</span>
           )}
         </div>
 

@@ -75,6 +75,11 @@ export default function DashboardPage() {
     fetchNews(activeCategory, 1)
   }
 
+  // 삭제된 기사를 목록에서 제거
+  function handleArticleDelete(deletedId) {
+    setArticles(prev => prev.filter(a => a.id !== deletedId))
+  }
+
   return (
     <div>
       {/* 헤더 영역: 제목 + 뉴스 가져오기 버튼 */}
@@ -106,6 +111,7 @@ export default function DashboardPage() {
           page={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          onDelete={handleArticleDelete}
         />
       )}
 
