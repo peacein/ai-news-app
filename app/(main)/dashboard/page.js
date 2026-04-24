@@ -126,20 +126,15 @@ export default function DashboardPage() {
       </div>
 
       {/* 뉴스 그리드 */}
-      {loadingNews ? (
-        <div className="flex justify-center py-20">
-          <div className="text-gray-400 text-sm">불러오는 중...</div>
-        </div>
-      ) : (
-        <NewsGrid
-          articles={articles}
-          categoriesMap={categoriesMap}
-          page={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-          onDelete={handleArticleDelete}
-        />
-      )}
+      <NewsGrid
+        articles={articles}
+        categoriesMap={categoriesMap}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+        onDelete={handleArticleDelete}
+        loading={loadingNews}
+      />
 
       {/* 카테고리 추가 모달 */}
       {showAddModal && (
