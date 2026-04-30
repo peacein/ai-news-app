@@ -107,3 +107,8 @@ npm run build    # 프로덕션 빌드
 npm run lint     # ESLint 실행
 npx drizzle-kit studio   # DB 브라우저 실행
 ```
+
+## 사용한 플러그인
+
+- Frontend Design: UI 디자인 품질 향상
+- commit-commands: 깃 워크플로우 자동화
