@@ -52,7 +52,7 @@ export default function NewsCard({ article, category, onDelete }) {
 
   return (
     <article
-      className="news-card group relative bg-white flex flex-col overflow-hidden"
+      className="news-card group relative bg-white dark:bg-gray-900 flex flex-col overflow-hidden"
       style={{ '--accent': accentColor }}
     >
       {/* 카테고리 컬러 액센트 바 */}
@@ -110,28 +110,28 @@ export default function NewsCard({ article, category, onDelete }) {
             <span />
           )}
           {article.sourceName && (
-            <span className="text-[11px] text-gray-400 font-medium tracking-wide">
+            <span className="text-[11px] text-gray-400 dark:text-gray-500 font-medium tracking-wide">
               {article.sourceName}
             </span>
           )}
         </div>
 
         {/* 제목 */}
-        <h2 className="card-title text-[15px] font-bold text-gray-900 leading-[1.45] line-clamp-2 mb-3 tracking-tight">
+        <h2 className="card-title text-[15px] font-bold text-gray-900 dark:text-gray-100 leading-[1.45] line-clamp-2 mb-3 tracking-tight">
           {article.translatedTitle ?? article.originalTitle}
         </h2>
 
         {/* 요약 */}
         {article.translatedSummary && (
-          <p className="text-[13px] text-gray-500 leading-[1.7] line-clamp-3 flex-1 mb-4">
+          <p className="text-[13px] text-gray-500 dark:text-gray-400 leading-[1.7] line-clamp-3 flex-1 mb-4">
             {article.translatedSummary}
           </p>
         )}
 
         {/* 구분선 */}
-        <div className="border-t border-gray-100 pt-3 mt-auto flex items-center justify-between">
+        <div className="border-t border-gray-100 dark:border-gray-800 pt-3 mt-auto flex items-center justify-between">
           {dateLabel ? (
-            <time className="text-[11px] text-gray-400 tabular-nums">
+            <time className="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums">
               {dateLabel}
             </time>
           ) : (
@@ -144,7 +144,7 @@ export default function NewsCard({ article, category, onDelete }) {
                 href={article.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-400 hover:text-blue-600 transition-colors duration-150"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150"
               >
                 원문 보기
                 <svg
@@ -169,10 +169,10 @@ export default function NewsCard({ article, category, onDelete }) {
               disabled={saved || saving}
               className={`notion-btn inline-flex items-center gap-1 text-[11px] font-semibold transition-colors duration-150 ${
                 saved
-                  ? 'text-emerald-500 cursor-default'
+                  ? 'text-emerald-500 dark:text-emerald-400 cursor-default'
                   : saving
-                    ? 'text-gray-300 cursor-not-allowed'
-                    : 'text-gray-400 hover:text-gray-700'
+                    ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
               }`}
               title={saved ? 'Notion에 저장됨' : 'Notion에 저장'}
             >
@@ -226,7 +226,8 @@ export default function NewsCard({ article, category, onDelete }) {
           border: 1px solid #e5e7eb;
           transition:
             box-shadow 0.22s ease,
-            transform 0.22s ease;
+            transform 0.22s ease,
+            border-color 0.22s ease;
           box-shadow:
             0 1px 3px rgba(0, 0, 0, 0.06),
             0 1px 2px rgba(0, 0, 0, 0.04);
@@ -236,6 +237,19 @@ export default function NewsCard({ article, category, onDelete }) {
             0 10px 32px rgba(0, 0, 0, 0.1),
             0 2px 8px rgba(0, 0, 0, 0.06);
           transform: translateY(-3px);
+        }
+        @media (prefers-color-scheme: dark) {
+          .news-card {
+            border-color: #1f2937;
+            box-shadow:
+              0 1px 3px rgba(0, 0, 0, 0.4),
+              0 1px 2px rgba(0, 0, 0, 0.3);
+          }
+          .news-card:hover {
+            box-shadow:
+              0 10px 32px rgba(0, 0, 0, 0.5),
+              0 2px 8px rgba(0, 0, 0, 0.4);
+          }
         }
 
         /* 좌측 액센트 바 */
@@ -289,6 +303,17 @@ export default function NewsCard({ article, category, onDelete }) {
           opacity: 0.4;
           cursor: not-allowed;
         }
+        @media (prefers-color-scheme: dark) {
+          .delete-btn {
+            background: rgba(31, 41, 55, 0.9);
+            color: #6b7280;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+          }
+          .delete-btn:hover {
+            background: #450a0a;
+            color: #fca5a5;
+          }
+        }
 
         /* 카테고리 뱃지 */
         .category-badge {
@@ -298,6 +323,11 @@ export default function NewsCard({ article, category, onDelete }) {
         /* 제목 hover 시 살짝 색상 강조 */
         .news-card:hover .card-title {
           color: #111827;
+        }
+        @media (prefers-color-scheme: dark) {
+          .news-card:hover .card-title {
+            color: #ffffff;
+          }
         }
       `}</style>
     </article>

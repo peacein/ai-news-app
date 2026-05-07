@@ -1,15 +1,20 @@
-'use client'
+'use client';
 
 // 카테고리 필터 탭 컴포넌트
-export default function CategoryFilter({ categories, activeCategory, onSelect, onAddClick }) {
+export default function CategoryFilter({
+  categories,
+  activeCategory,
+  onSelect,
+  onAddClick,
+}) {
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {/* 전체 탭 */}
       <button
         className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
           !activeCategory
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ? 'bg-blue-600 text-white dark:bg-blue-500'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
         }`}
         onClick={() => onSelect(null)}
       >
@@ -17,8 +22,8 @@ export default function CategoryFilter({ categories, activeCategory, onSelect, o
       </button>
 
       {/* 카테고리 탭 */}
-      {categories?.map(category => {
-        const isActive = activeCategory === category.id
+      {categories?.map((category) => {
+        const isActive = activeCategory === category.id;
         return (
           <button
             key={category.id}
@@ -34,13 +39,13 @@ export default function CategoryFilter({ categories, activeCategory, onSelect, o
           >
             {category.name}
           </button>
-        )
+        );
       })}
 
       {/* 카테고리 추가 버튼 */}
       <button
         onClick={onAddClick}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-gray-400 border border-dashed border-gray-300 hover:text-blue-600 hover:border-blue-400 transition-colors"
+        className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-gray-400 border border-dashed border-gray-300 hover:text-blue-600 hover:border-blue-400 transition-colors dark:text-gray-500 dark:border-gray-700 dark:hover:text-blue-400 dark:hover:border-blue-500"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -59,5 +64,5 @@ export default function CategoryFilter({ categories, activeCategory, onSelect, o
         카테고리 추가
       </button>
     </div>
-  )
+  );
 }
