@@ -104,9 +104,11 @@ export default function DashboardPage() {
       {/* 헤더 영역: 제목 + 배지 + 뉴스 가져오기 버튼 */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-gray-900">AI 뉴스 대시보드</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            AI 뉴스 대시보드
+          </h1>
           {totalNewsCount !== null && (
-            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-300">
               총 {totalNewsCount.toLocaleString()}개의 뉴스
             </span>
           )}
